@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<!-- https://wongpeggy.github.io/pl3/canada.html -->
+<!-- Author: Peggy Wong -->
+<!-- Date Created: Mar 03, 2022 -->
+<!-- Date Modified: Mar 03, 2022 -->
+<!-- Description: Provinces and Territories of Canada -->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>Provinces and Territories of Canada</title>
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+      #title {
+        background-color: #FFFFFF80;
+        border-radius: 25px;
+        color: #FF0000;
+        font-family: Helvetica, sans-serif;
+        left: 4vw;
+        padding-left: 1vw;
+        padding-right: 1vw;
+        position: absolute;
+        top: 1vw;
+      }
+    </style>
+    <!-- Reference the CSS file and JS library -->
+    <link rel="stylesheet" href="https://js.arcgis.com/4.22/esri/themes/light/main.css">
+    <script src="https://js.arcgis.com/4.22/"></script>
+    <script>
+      require(["esri/config", "esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer"], function(esriConfig, Map, MapView, FeatureLayer) {
+        esriConfig.apiKey = "AAPK3427ffc4f3a1475ca19b64730cc65445GrSIENSFe0N6XenbQLn17VOZHVgF5F2IJRF1Zi2wTZ1XUA90Z9CnnizqFZ2C8CB-";
+        const map = new Map({
+          basemap: "arcgis-topographic" //Basemap service
+        });
+        const view = new MapView({
+          container: "viewDiv",
+          map: map,
+          center: [-105, 68], //Longitude, latitude
+          zoom: 3,
+        });
+        // Add Labels
+        // Reference: https://developers.arcgis.com/javascript/latest/sample-code/labels-basic/
+        const canadaLabel = {
+          symbol: {
+            type: "text",
+            color: "black", 
+            haloColor: "white",
+            haloSize: "1px",
+            font: {
+              family: "Amatic SC",
+              style: "normal",
+              weight: "bold",
+              size: 18,
+            }
+          },
+          labelPlacement: "always-horizontal",
+          labelExpressionInfo: {
+            expression: "$feature.PRENAME"
+          }
+        };
+        // Display A Pop-Up
+        // Reference: https://developers.arcgis.com/javascript/latest/display-a-pop-up/
+        const canadaPopup = {
+          "title": "{PRENAME}",
+          "content": "Fr: {PRFNAME}"
+        };
+        // Hosted Feature Layers
+        // Reference: https://developers.arcgis.com/documentation/mapping-apis-and-services/data-hosting/hosted-feature-layers/
+        const canadaLayer = new FeatureLayer({
+          // The url can be https://luna.flemingcollege.ca/arcgis/rest/login?redirect=https%3A//luna.flemingcollege.ca/arcgis/rest/services/biggerbrains61/CanadaPWong/MapServer (login required)
+          // The hosted feature layer on ArcGIS Online must be set to public
+          url: "https://utility.arcgis.com/usrsvcs/servers/a823169908b6412d83385477c29398d1/rest/services/biggerbrains61/CanadaPWong/MapServer/0",
+          outFields: ["PRENAME", "PRFNAME"],
+          popupTemplate: canadaPopup,
+          labelingInfo: canadaLabel
+        });
+        map.add(canadaLayer, 0);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="viewDiv"></div>
+    <div id="title">
+      <h1>🍁 Provinces and Territories of Canada 🍁</h1>
+    </div>
+  </body>
+</html>
